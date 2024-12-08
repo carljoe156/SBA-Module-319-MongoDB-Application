@@ -1,5 +1,5 @@
 // models/user.js
-// Here is added validation in the schema
+// Here is some added validation in the schema
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
@@ -9,6 +9,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
     type: String,
     required: true,
     unique: true,

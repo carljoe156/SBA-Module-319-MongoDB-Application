@@ -1,20 +1,41 @@
-<!-- views/index.ejs -->
+<!-- views/home.ejs -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/styles.css" />
+    <title>All Posts</title>
   </head>
   <body>
     <header>
-      <h1><%= message %></h1>
+      <h1>Welcome to ServeSpoon Blog!</h1>
     </header>
 
-    <main>
-      <p>This is my home page!</p>
-    </main>
+    <h2>Posts</h2>
+
+    <% if (posts && posts.length > 0) { %>
+    <ul>
+      <% posts.forEach(post => { %>
+      <li>
+        <h3><a href="/posts/<%= post._id %>"><%= post.title %></a></h3>
+        <p><%= post.content %></p>
+        <p>Posted by: <%= post.user.username %></p>
+
+        <!-- Links for Edit and Delete -->
+        <a href="/posts/edit/<%= post._id %>">Edit</a>
+        <form
+          action="/posts/<%= post._id %>?_method=DELETE"
+          method="POST"
+          style="display: inline"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>No posts available.</p>
+    <% } %>
 
     <footer>
       <p>&copy; 2024 ServeSpoon</p>
