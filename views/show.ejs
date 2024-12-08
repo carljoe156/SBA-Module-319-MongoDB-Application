@@ -1,0 +1,45 @@
+<!-- views/showPost.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= post.title %></title>
+  </head>
+  <body>
+    <header>
+      <h1><%= post.title %></h1>
+      <p>Posted by: <%= post.user.username %></p>
+    </header>
+
+    <main>
+      <p><%= post.content %></p>
+
+      <h3>Comments</h3>
+      <% if (post.comments && post.comments.length > 0) { %>
+      <ul>
+        <% post.comments.forEach(comment => { %>
+        <li><%= comment.content %></li>
+        <% }) %>
+      </ul>
+      <% } else { %>
+      <p>No comments yet.</p>
+      <% } %>
+
+      <!-- Add New Comment Form -->
+      <form action="/comments" method="POST">
+        <input
+          type="text"
+          name="content"
+          placeholder="Add a comment"
+          required
+        />
+        <input type="hidden" name="postId" value="<%= post._id %>" />
+        <input type="hidden" name="userId" value="<%= post.user._id %>" />
+        <button type="submit">Add Comment</button>
+      </form>
+
+      <a href="/">Back to all posts</a>
+    </main>
+  </body>
+</html>

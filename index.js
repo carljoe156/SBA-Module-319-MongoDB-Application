@@ -130,28 +130,29 @@ const seedData = async (req, res) => {
 app.get("/seed", seedData);
 
 // Home route that renders out our index.ejs file- without temp seed
-app.get("/", (req, res) => {
-  res.render("home", {
-    title: "Home page",
-    message: "Welcome to ServeSpoon Blog!",
-  });
+// app.get("/", (req, res) => {
+//   res.render("home", {
+//     title: "Home page",
+//     message: "Welcome to ServeSpoon Blog!",
+//   });
+// });
+
+//This can help with displaying everything Homepage route
+app.get("/", async (req, res) => {
+  try {
+    // Fetch posts with populated user data
+    const posts = await Post.find()
+      .populate("user", "username email") // Populate the user field with 'username' and 'email'
+      .populate("comments"); // Optional: populate comments
+
+    // Render the EJS view and pass posts data
+    res.render("home", { posts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error fetching posts.");
+  }
 });
 
-// This can help with displaying everything Homepage route
-// app.get("/", async (req, res) => {
-//   try {
-//     // Fetch posts with populated user data
-//     const posts = await Post.find()
-//       .populate("user", "username email") // Populate the user field with 'username' and 'email'
-//       .populate("comments"); // Optional: populate comments
-
-//     // Render the EJS view and pass posts data
-//     res.render("home", { posts });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send("Error fetching posts.");
-//   }
-// });
 // Define your other routes here
 // app.use("/api/fruits", fruitRoutes);
 // app.use("/api/vegetables", vegetableRoutes);
@@ -178,6 +179,14 @@ app.get("/comments", async (req, res) => {
   } catch (err) {
     res.status(500).send("Error fetching comments.");
   }
+});
+
+// For posting on our blog
+app.post("/posts", async (req, res) => {
+  const { title, content, userId } = req.body;
+  const newPost = new Post({ title, content, user: userId });
+  await newPost.save();
+  res.redirect("/"); // Redirect to the home page
 });
 
 const PORT = process.env.PORT || 5000;
